@@ -1,21 +1,28 @@
 <template>
   <div id="app">
-    <canvas v-model="myCanvas" class="myCanvas"></canvas>
-    <button v-on:click="buttonClick">클릭</button>
+    <canvas id="myCanvas" class="myCanvas"></canvas>
+    <form>
+      <label>체인길이</label>
+      <input v-model="chain.length" type="text" />
+    </form>
   </div>
 
 </template>
 
 <script>
 import paper from "paper"
+import {Point} from  "paper"
 
 export default {
   name: 'App',
-  props:['myCanvas'],
   data:()=>({
     path: null,
     scope: null,
-    myCanvas:null
+    myCanvas:null,
+    paths:null,
+    chain:{
+      length:null
+    }
   }),
   methods:{
     pathCreate(scope) {
@@ -28,18 +35,40 @@ export default {
     },
     buttonClick(){
       let self = this;
-      self.path = self.pathCreate(self.scope);
-      self.path.add(0, 0);
-      self.path.add(this.canvasWidth/2, this.canvasHeight);
+      let rPath = self.pathCreate(self.scope);
+
+
+      rPath.add(new Point(this.canvasWidth/2, this.canvasHeight*0.8));
+
+      // let 근접
+      // while ()
+
+
+
+      rPath.fullySelected = true;
+
+      this.path = rPath;
+
+      // self.path.scale(0.5)
+      console.log(self.path.segments);
+
+      console.log(self.path);
 
     }
   },
   mounted() {
+    this.myCanvas = document.getElementById("myCanvas");
+    // paper.PaperScope.settings.hitTest()
     this.scope = new paper.PaperScope();
     this.scope.setup(this.myCanvas);
-    console.log(this.myCanvas);
-    // this.canvasHeight = this.myCanvas.height;
-    // this.canvasWidth = this.myCanvas.width;
+    // console.log(this.$el);
+    this.canvasHeight = this.myCanvas.height;
+    this.canvasWidth = this.myCanvas.width;
+
+    // this.paths = this.path.segments();
+    console.log(this.scope);
+    // this.scope.interiorPoint();
+    this.buttonClick();
   }
 }
 </script>
