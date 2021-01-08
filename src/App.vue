@@ -32,6 +32,8 @@ export default {
         strokeWidth: 1.5
       });
 
+      // let count = new paper.Point(0,0)
+
       if (value == null){
         console.log("value는 null입니다.");
       }
@@ -39,30 +41,56 @@ export default {
       let head = sPoint;
       // let vector = new paper.Point(5,5);
       let to;
-      let target = new paper.Point(this.canvasWidth/2,this.canvasHeight*0.8);
+      let target = new paper.Point(this.canvasWidth/2,this.canvasHeight);
+      let co = 0;
+      while (head.getDistance(new paper.Point(this.canvasWidth,0)) > chainLength){
+        if (head.getDistance(target) < chainLength){
+          target = new paper.Point(this.canvasWidth, 0);
+        }
+        let angle = target.subtract(head).getAngle();
+        // console.log(angle);
+        // angle = 90.0;
+        // // let weight = 0.0;
+        // if (angle > 0) {
+        //   angle += -target.subtract(head).getAngle()*0.1;
+        // }else {
+        //   // angle += 10.0;
+        // }
+
+        let pointByAngle = new paper.Point({
+          angle:angle,
+          length:chainLength
+        });
+
+        to = head.add(pointByAngle);
+
+        path.addSegments([head,to]);
+        head = to;
+
+        co++;
+        if (co > 300) {
+          break;
+        }
+      }
+      console.log(co + "번 반복함");
+
+
+      path.segments.forEach((segment)=>{
+        if (segment.index < path.segments.length/2) {
+          segment.point.angle += segment.index*0.1;
+          console.log(segment);
+        }
+
+      })
+
+
+
+
       new paper.Path.Circle({
         center:target,
         radius:10,
         strokeColor:'black'
       });
-      for(let i = 0 ; i < 100; i++){
-        if (head.getDistance(target) < chainLength){
-          target = new paper.Point(this.canvasWidth, 0);
-        }
-        let angle = target.subtract(head).getAngle();
-        let pointByAngle = new paper.Point({
-          angle:angle,
-          length:chainLength
-        });
-        to = head.add(pointByAngle);
-        path.addSegments([head,to]);
-        head = to;
-      }
-
-
-
-
-
       path.fullySelected = true;
 
 
