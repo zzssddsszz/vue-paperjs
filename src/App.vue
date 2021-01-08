@@ -46,13 +46,10 @@ export default {
         strokeColor:'black'
       });
       for(let i = 0 ; i < 100; i++){
-        // let angle = head.getDirectedAngle(target);
-        console.log(chainLength);
         if (head.getDistance(target) < chainLength){
           target = new paper.Point(this.canvasWidth, 0);
         }
-        let angle = new paper.Point(target.x - head.x,target.y - head.y).getAngle();
-        // console.log(angle);
+        let angle = target.subtract(head).getAngle();
         let pointByAngle = new paper.Point({
           angle:angle,
           length:chainLength
