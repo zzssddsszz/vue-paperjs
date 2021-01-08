@@ -11,7 +11,6 @@
 
 <script>
 import paper from "paper"
-import {Point} from  "paper"
 
 export default {
   name: 'App',
@@ -25,34 +24,57 @@ export default {
     }
   }),
   methods:{
-    pathCreate(scope) {
+    pathCreate(scope,sPoint,ePoint,chainLength,...value) {
       scope.activate();
-      return new paper.Path({
+      let path = new paper.Path({
         strokeColor:"#000000",
         strokeJoin: 'round',
         strokeWidth: 1.5
-      })
+      });
+
+      if (value == null){
+        console.log("value는 null입니다.");
+      }
+
+      let head = sPoint;
+      // let vector = new paper.Point(5,5);
+      let to;
+      let target = new paper.Point(this.canvasWidth/2,this.canvasHeight*0.8);
+      new paper.Path.Circle({
+        center:target,
+        radius:10,
+        strokeColor:'black'
+      });
+      for(let i = 0 ; i < 100; i++){
+        // let angle = head.getDirectedAngle(target);
+        console.log(chainLength);
+        if (head.getDistance(target) < chainLength){
+          target = new paper.Point(this.canvasWidth, 0);
+        }
+        let angle = new paper.Point(target.x - head.x,target.y - head.y).getAngle();
+        // console.log(angle);
+        let pointByAngle = new paper.Point({
+          angle:angle,
+          length:chainLength
+        });
+        to = head.add(pointByAngle);
+        path.addSegments([head,to]);
+        head = to;
+      }
+
+
+
+
+
+      path.fullySelected = true;
+
+
+      return path;
     },
     buttonClick(){
       let self = this;
-      let rPath = self.pathCreate(self.scope);
+      self.pathCreate(self.scope,new paper.Point(0,0),new paper.Point(this.canvasWidth),10,null);
 
-
-      rPath.add(new Point(this.canvasWidth/2, this.canvasHeight*0.8));
-
-      // let 근접
-      // while ()
-
-
-
-      rPath.fullySelected = true;
-
-      this.path = rPath;
-
-      // self.path.scale(0.5)
-      console.log(self.path.segments);
-
-      console.log(self.path);
 
     }
   },
