@@ -24,37 +24,30 @@ export default {
     }
   }),
   methods: {
-    pathCreate(scope, sPoint, ePoint, chainLength, ...value) {
-      scope.activate();
+    pathCreate(scope, chainLength, ...value) {
+      // scope.activate();
       let path = new paper.Path({
         strokeColor: "#000000",
         strokeJoin: 'round',
         strokeWidth: 1.5
       });
 
-      // let count = new paper.Point(0,0)
-
-      if (value == null) {
+      let head = new paper.Point(0,0);
+      let to;
+      let target;
+      if (value != null && typeof value == "object" && !Object.keys(value).length) {
         console.log("value는 null입니다.");
+        target= new paper.Point(this.canvasWidth / 2, this.canvasHeight);
       }
 
-      let head = sPoint;
-      let to;
-      let target = new paper.Point(this.canvasWidth / 2, this.canvasHeight);
+      //무한루프 몇번도나
       let co = 0;
+      //좌측상단에서 중간하단 찍고 우측상단까지 패스
       while (head.getDistance(new paper.Point(this.canvasWidth, 0)) > chainLength) {
         if (head.getDistance(target) < chainLength) {
           target = new paper.Point(this.canvasWidth, 0);
         }
         let angle = target.subtract(head).getAngle();
-        // console.log(angle);
-        // angle = 90.0;
-        // // let weight = 0.0;
-        // if (angle > 0) {
-        //   angle += -target.subtract(head).getAngle()*0.1;
-        // }else {
-        //   // angle += 10.0;
-        // }
 
         let pointByAngle = new paper.Point({
           angle: angle,
@@ -68,35 +61,29 @@ export default {
 
         co++;
         if (co > 300) {
+          //무한루프 안전코드
           break;
         }
       }
       console.log(co + "번 반복함");
 
+      //중간체인을 잘보이는 가운데로 맞추기
+      let index = parseInt(path.segments.length / 2);
+      path.segments[index - 1].point.x = this.canvasWidth / 2 - chainLength / 2;
+      path.segments[index - 1].point.y = this.canvasHeight * 0.78;
+      path.segments[index].point.x = path.segments[index - 1].point.x + chainLength;
+      path.segments[index].point.y = path.segments[index - 1].point.y;
 
-      /*path.segments.forEach((segment)=>{
-        if (segment.index < path.segments.length/2) {
-          segment.point.angle += segment.index*0.1;
-        }
 
-      })*/
-
-      // path.translate(new paper.Point(0, -this.canvasHeight * 0.2));
-      let number = parseInt(path.segments.length / 2);
-      path.segments[number - 1].point.x = this.canvasWidth / 2 - chainLength / 2;
-      path.segments[number - 1].point.y = this.canvasHeight * 0.78;
-      path.segments[number].point.x = path.segments[number - 1].point.x + chainLength;
-      path.segments[number].point.y = path.segments[number - 1].point.y;
-
-      console.log(path.segments[number])
-
+      //초기각도는 중간이기때문에 0
       let angle = 0;
-      head = path.segments[number].point;
-      to;
-      target = new paper.Point(this.canvasWidth*1.2 , -this.canvasHeight*2);
-      for (let i = path.segments.length / 2 + 1, y = path.segments.length / 2,  z = 0 ; i < path.segments.length; i++,z++) {
+      head = path.segments[index].point;
+      //자연스럽게 하기 위해 캔버스 각도 조절
+      target = new paper.Point(this.canvasWidth*1.4 , -this.canvasHeight*2);
+      //중앙부터 우측 상단까지의 체인 조절
+      for (let i = path.segments.length / 2 ,  z = 0 ; i < path.segments.length; i++,z++) {
         angle = angle%360;
-        angle += (target.subtract(path.segments[i-1].point).getAngle()- angle)*z/y*1.5;
+        angle += (target.subtract(path.segments[i-1].point).getAngle()- angle)*(z/(path.segments.length / 2))*1.5;
 
         console.log(angle)
         let vector = new paper.Point({
@@ -109,6 +96,24 @@ export default {
         })
       }
 
+      //중앙부터 좌측 상단까지의 체인 조절
+      angle = 180;
+      target = new paper.Point(-this.canvasWidth*1.4 , -this.canvasHeight*2);
+      for (let i = path.segments.length / 2-1 ,  z = 0 ; i > 0; i--,z++) {
+        angle = angle%360;
+        angle += (target.subtract(path.segments[i].point).getAngle()- angle)*(z/(path.segments.length / 2))*1.5;
+
+        console.log(angle)
+        let vector = new paper.Point({
+          angle:angle,
+          length:chainLength
+        })
+        path.segments[i-1].point.set({
+          x:path.segments[i].point.x+ vector.x,
+          y:path.segments[i].point.y+ vector.y
+        })
+      }
+
 
       new paper.Path.Circle({
         center: target,
@@ -117,14 +122,14 @@ export default {
       });
       path.fullySelected = true;
 
-      path.s
+
 
 
       return path;
     },
     buttonClick() {
       let self = this;
-      self.pathCreate(self.scope, new paper.Point(0, 0), new paper.Point(this.canvasWidth), 10, null);
+      self.pathCreate(self.scope, 10);
 
 
     }
