@@ -85,7 +85,7 @@ export default {
       // path.translate(new paper.Point(0, -this.canvasHeight * 0.2));
       let number = parseInt(path.segments.length / 2);
       path.segments[number - 1].point.x = this.canvasWidth / 2 - chainLength / 2;
-      path.segments[number - 1].point.y = this.canvasHeight * 0.8;
+      path.segments[number - 1].point.y = this.canvasHeight * 0.78;
       path.segments[number].point.x = path.segments[number - 1].point.x + chainLength;
       path.segments[number].point.y = path.segments[number - 1].point.y;
 
@@ -94,7 +94,7 @@ export default {
       let angle = 0;
       head = path.segments[number].point;
       to;
-      target = new paper.Point(this.canvasWidth , 0);
+      target = new paper.Point(this.canvasWidth , -this.canvasHeight*0.2);
       for (let i = path.segments.length / 2 + 1, y = path.segments.length / 2,  z = 0 ; i < path.segments.length; i++,z++) {
         angle += (target.subtract(path.segments[i-1].point).getAngle()- angle)*z/y*3;
         console.log((target.subtract(path.segments[i-1].point).getAngle()- angle)*z/y*3)
@@ -115,6 +115,8 @@ export default {
         strokeColor: 'black'
       });
       path.fullySelected = true;
+
+      path.s
 
 
       return path;
