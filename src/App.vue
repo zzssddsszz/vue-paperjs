@@ -39,7 +39,6 @@ export default {
       }
 
       let head = sPoint;
-      // let vector = new paper.Point(5,5);
       let to;
       let target = new paper.Point(this.canvasWidth / 2, this.canvasHeight);
       let co = 0;
@@ -94,10 +93,12 @@ export default {
       let angle = 0;
       head = path.segments[number].point;
       to;
-      target = new paper.Point(this.canvasWidth , -this.canvasHeight*0.2);
+      target = new paper.Point(this.canvasWidth*1.2 , -this.canvasHeight*2);
       for (let i = path.segments.length / 2 + 1, y = path.segments.length / 2,  z = 0 ; i < path.segments.length; i++,z++) {
-        angle += (target.subtract(path.segments[i-1].point).getAngle()- angle)*z/y*3;
-        console.log((target.subtract(path.segments[i-1].point).getAngle()- angle)*z/y*3)
+        angle = angle%360;
+        angle += (target.subtract(path.segments[i-1].point).getAngle()- angle)*z/y*1.5;
+
+        console.log(angle)
         let vector = new paper.Point({
           angle:angle,
           length:chainLength
