@@ -67,7 +67,7 @@ export default {
         //체인의 무게점
         // console.log(to);
         path.add(to);
-        path.lastSegment.weight = 1;
+        path.lastSegment.weight = 10;
         head = to;
         co++;
         if (co > 300) {
@@ -130,12 +130,12 @@ export default {
       target = new paper.Point(-this.canvasWidth * 0.5, -this.canvasHeight * 2);
 
       totalWeight = 0;
-      for (let i = path.segments.length / 2 - 1, z = 0; i > 0; i--, z++) {
+      for (let i = path.segments.length / 2 , z = 0; i > 0; i--, z++) {
         totalWeight += path.segments[i].weight;
       }
       // console.log(totalWeight);
 
-      for (let i = path.segments.length / 2 - 1, weight = 0; i >= 0; i--) {
+      for (let i = path.segments.length / 2 , weight = 0; i >= 0; i--) {
         if (weight / totalWeight > 0.5) {
           weight = totalWeight;
         } else {
@@ -144,7 +144,7 @@ export default {
 
 
         angle = angle % 360;
-        if (!(i == path.segments.length / 2 - 1)) {
+        if (!(i == path.segments.length / 2 )) {
           angle += (target.subtract(path.segments[i + 1].point).getAngle() - angle) * (weight / 2 / totalWeight);
         }
         let vector = new paper.Point({
