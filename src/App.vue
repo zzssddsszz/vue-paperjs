@@ -66,6 +66,7 @@ export default {
         }
       }
       console.log(co + "번 반복함");
+      console.log(path.get);
 
       //중간체인을 잘보이는 가운데로 맞추기
       let index = parseInt(path.segments.length / 2);
@@ -83,6 +84,8 @@ export default {
       //중앙부터 우측 상단까지의 체인 조절
       for (let i = path.segments.length / 2 ,  z = 0 ; i < path.segments.length; i++,z++) {
         angle = angle%360;
+        // console.log(target.subtract(path.segments[i-1].point).getAngle())
+        // console.log(z/(path.segments.length/2 )+"//1");
         angle += (target.subtract(path.segments[i-1].point).getAngle()- angle)*(z/(path.segments.length/2))*1.2;
 
         // console.log(angle)
@@ -97,22 +100,21 @@ export default {
       }
 
       //중앙부터 좌측 상단까지의 체인 조절
-      angle = 180;
+      angle = -180;
       // target = new paper.Point(-this.canvasWidth*0.1 , -this.canvasHeight*2);
       target = new paper.Point(-this.canvasWidth*0.1 , -this.canvasHeight*2);
 
-      for (let i = path.segments.length / 2-1 ,  z = 0 ; i > 0; i--,z++) {
+      for (let i = path.segments.length / 2 ,  z = 0 ; i > 0; i--,z++) {
         angle = angle%360;
         // console.log(360-path.segments[i].point.subtract(target).getAngle());
-
         //앞뒤 바뀜
         //뭔가 엄청 고쳐야함 왜 되는지도 모르겠음
-        angle += (340-(path.segments[i].point.subtract(target).getAngle())-angle)*(z/(path.segments.length/2 ))*1.5;
+        // console.log(z/(path.segments.length/2 )+"//2");
+        console.log(target.subtract(path.segments[i-1].point).getAngle()- angle);
+        angle += (target.subtract(path.segments[i-1].point).getAngle()- angle)*(z/(path.segments.length/2 ))*1.2;
 
-        // console.log((360-path.segments[i].point.subtract(target).getAngle())*(z/(path.segments.length ))*1.5)
-        // console.log(target.subtract(path.segments[i].point).getAngle()+"//")
-        console.log(path.segments[i].point.subtract(target).getAngle())
-        console.log(angle+"각도")
+        console.log(angle)
+
         let vector = new paper.Point({
           angle:angle,
           length:chainLength
