@@ -79,13 +79,13 @@ export default {
       let angle = 0;
       head = path.segments[index].point;
       //자연스럽게 하기 위해 캔버스 각도 조절
-      target = new paper.Point(this.canvasWidth*1.4 , -this.canvasHeight*2);
+      target = new paper.Point(this.canvasWidth*1.1 , -this.canvasHeight*2);
       //중앙부터 우측 상단까지의 체인 조절
       for (let i = path.segments.length / 2 ,  z = 0 ; i < path.segments.length; i++,z++) {
         angle = angle%360;
-        angle += (target.subtract(path.segments[i-1].point).getAngle()- angle)*(z/(path.segments.length / 2))*1.5;
+        angle += (target.subtract(path.segments[i-1].point).getAngle()- angle)*(z/(path.segments.length/2))*1.2;
 
-        console.log(angle)
+        // console.log(angle)
         let vector = new paper.Point({
           angle:angle,
           length:chainLength
@@ -98,28 +98,38 @@ export default {
 
       //중앙부터 좌측 상단까지의 체인 조절
       angle = 180;
-      target = new paper.Point(-this.canvasWidth*1.4 , -this.canvasHeight*2);
+      // target = new paper.Point(-this.canvasWidth*0.1 , -this.canvasHeight*2);
+      target = new paper.Point(-this.canvasWidth*0.1 , -this.canvasHeight*2);
+
       for (let i = path.segments.length / 2-1 ,  z = 0 ; i > 0; i--,z++) {
         angle = angle%360;
-        angle += (target.subtract(path.segments[i].point).getAngle()- angle)*(z/(path.segments.length / 2))*1.5;
+        // console.log(360-path.segments[i].point.subtract(target).getAngle());
 
-        console.log(angle)
+        //앞뒤 바뀜
+        //뭔가 엄청 고쳐야함 왜 되는지도 모르겠음
+        angle += (340-(path.segments[i].point.subtract(target).getAngle())-angle)*(z/(path.segments.length/2 ))*1.5;
+
+        // console.log((360-path.segments[i].point.subtract(target).getAngle())*(z/(path.segments.length ))*1.5)
+        // console.log(target.subtract(path.segments[i].point).getAngle()+"//")
+        console.log(path.segments[i].point.subtract(target).getAngle())
+        console.log(angle+"각도")
         let vector = new paper.Point({
           angle:angle,
           length:chainLength
         })
-        path.segments[i-1].point.set({
-          x:path.segments[i].point.x+ vector.x,
-          y:path.segments[i].point.y+ vector.y
+        // console.log(vector);
+        path.segments[i].point.set({
+          x:path.segments[i+1].point.x+ vector.x,
+          y:path.segments[i+1].point.y+ vector.y
         })
       }
 
 
-      new paper.Path.Circle({
+      /*new paper.Path.Circle({
         center: target,
         radius: 10,
         strokeColor: 'black'
-      });
+      });*/
       path.fullySelected = true;
 
 
