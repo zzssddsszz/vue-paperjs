@@ -21,12 +21,12 @@ export default {
     paths: null,
     chain: {
       length: null,
-      centerWeight:0
+      centerWeight: 0
     }
   }),
   methods: {
     pathCreate(scope, chainLength, ...value) {
-      function getPointByTarget(target,head,chainLength) {
+      function getPointByTarget(target, head, chainLength) {
         let angle = target.subtract(head).getAngle();
 
         let pointByAngle = new paper.Point({
@@ -44,11 +44,11 @@ export default {
         strokeWidth: 1.5
       });
 
-      let head = new paper.Point(0,0);
+      let head = new paper.Point(0, 0);
       let to;
       let target;
       //중간 하단으로 목표점 설정
-      target= new paper.Point(this.canvasWidth / 2, this.canvasHeight);
+      target = new paper.Point(this.canvasWidth / 2, this.canvasHeight);
 
       if (value != null && typeof value == "object" && !Object.keys(value).length) {
         console.log("value 들어오면 작업 뭐할까")
@@ -58,13 +58,12 @@ export default {
       let co = 0;
 
 
-
 //좌측상단에서 중간하단 찍고 우측상단까지 경로
       while (head.getDistance(new paper.Point(this.canvasWidth, 0)) > chainLength) {
         if (head.getDistance(target) < chainLength) {
           target = new paper.Point(this.canvasWidth, 0);
         }
-        to = head.add(getPointByTarget(target,head,chainLength));
+        to = head.add(getPointByTarget(target, head, chainLength));
         //체인의 무게점
         // console.log(to);
         path.add(to);
@@ -78,7 +77,7 @@ export default {
       }
 
       //가운데 무게를 적용해봤음 뭔가 수정이 필요함
-      path.segments[path.segments.length/2].weight = 200;
+      path.segments[path.segments.length / 2].weight = 200;
 
 
       console.log(co + "번 반복함");
@@ -96,66 +95,66 @@ export default {
       let angle = 0;
       head = path.segments[index].point;
       //자연스럽게 하기 위해 캔버스 각도 조절
-      target = new paper.Point(this.canvasWidth*1.5 , -this.canvasHeight*2);
+      target = new paper.Point(this.canvasWidth * 1.5, -this.canvasHeight * 2);
       let totalWeight = 0;
-      for (let i = path.segments.length / 2  ; i < path.segments.length; i++) {
+      for (let i = path.segments.length / 2; i < path.segments.length; i++) {
         totalWeight += path.segments[i].weight;
       }
       // console.log("총무게 : "+totalWeight);
 
       //중앙부터 우측 상단까지의 체인 조절
-      for (let i = path.segments.length / 2 ,weight =0 ; i < path.segments.length; i++) {
-        if (weight/totalWeight > 0.5){
+      for (let i = path.segments.length / 2, weight = 0; i < path.segments.length; i++) {
+        if (weight / totalWeight > 0.5) {
           weight = totalWeight;
-        }else {
+        } else {
           weight += path.segments[i].weight;
         }
-        angle = angle%360;
-        if (!(i == path.segments.length /2)){
-          angle += (target.subtract(path.segments[i-1].point).getAngle()- angle)*(weight/2/totalWeight);
+        angle = angle % 360;
+        if (!(i == path.segments.length / 2)) {
+          angle += (target.subtract(path.segments[i - 1].point).getAngle() - angle) * (weight / 2 / totalWeight);
         }
 
         let vector = new paper.Point({
-          angle:angle,
-          length:chainLength
+          angle: angle,
+          length: chainLength
         })
         path.segments[i].point.set({
-          x:path.segments[i-1].point.x+ vector.x,
-          y:path.segments[i-1].point.y+ vector.y
+          x: path.segments[i - 1].point.x + vector.x,
+          y: path.segments[i - 1].point.y + vector.y
         })
       }
 
       //중앙부터 좌측 상단까지의 체인 조절
       //초기각도는 좌측으로 -180도라서
       angle = -180;
-      target = new paper.Point(-this.canvasWidth*0.5 , -this.canvasHeight*2);
+      target = new paper.Point(-this.canvasWidth * 0.5, -this.canvasHeight * 2);
 
       totalWeight = 0;
-      for (let i = path.segments.length / 2 ,  z = 0 ; i > 0; i--,z++) {
+      for (let i = path.segments.length / 2 - 1, z = 0; i > 0; i--, z++) {
         totalWeight += path.segments[i].weight;
       }
       // console.log(totalWeight);
 
-      for (let i = path.segments.length / 2 ,weight = 0 ; i >= 0; i--) {
-        if (weight/totalWeight > 0.5){
+      for (let i = path.segments.length / 2 - 1, weight = 0; i >= 0; i--) {
+        if (weight / totalWeight > 0.5) {
           weight = totalWeight;
-        }else {
-          weight += path.segments[i].weight;
+        } else {
+          weight += path.segments[i + 1].weight;
         }
 
 
-        angle = angle%360;
-        if (!(i == path.segments.length /2)) {
+        angle = angle % 360;
+        if (!(i == path.segments.length / 2 - 1)) {
           angle += (target.subtract(path.segments[i + 1].point).getAngle() - angle) * (weight / 2 / totalWeight);
         }
         let vector = new paper.Point({
-          angle:angle,
-          length:chainLength
+          angle: angle,
+          length: chainLength
         })
 
         path.segments[i].point.set({
-          x:path.segments[i+1].point.x+ vector.x,
-          y:path.segments[i+1].point.y+ vector.y
+          x: path.segments[i + 1].point.x + vector.x,
+          y: path.segments[i + 1].point.y + vector.y
         })
       }
 
@@ -166,8 +165,6 @@ export default {
         strokeColor: 'black'
       });*/
       path.fullySelected = true;
-
-
 
 
       return path;
