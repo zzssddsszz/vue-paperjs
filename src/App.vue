@@ -68,7 +68,7 @@ export default {
         //체인의 무게점
         // console.log(to);
         path.add(to);
-        path.lastSegment.weight = 10;
+        path.lastSegment.weight = 1;
         head = to;
         co++;
         if (co > 300) {
@@ -78,7 +78,7 @@ export default {
       }
 
       //가운데 무게를 적용해봤음 뭔가 수정이 필요함
-      path.segments[path.segments.length/2].weight = 20;
+      path.segments[path.segments.length/2].weight = 200;
 
 
       console.log(co + "번 반복함");
@@ -111,7 +111,9 @@ export default {
           weight += path.segments[i].weight;
         }
         angle = angle%360;
-        angle += (target.subtract(path.segments[i-1].point).getAngle()- angle)*(weight/2/totalWeight);
+        if (!(i == path.segments.length /2)){
+          angle += (target.subtract(path.segments[i-1].point).getAngle()- angle)*(weight/2/totalWeight);
+        }
 
         let vector = new paper.Point({
           angle:angle,
@@ -143,8 +145,9 @@ export default {
 
 
         angle = angle%360;
-        angle += (target.subtract(path.segments[i+1].point).getAngle()- angle)*(weight/2/totalWeight);
-
+        if (!(i == path.segments.length /2)) {
+          angle += (target.subtract(path.segments[i + 1].point).getAngle() - angle) * (weight / 2 / totalWeight);
+        }
         let vector = new paper.Point({
           angle:angle,
           length:chainLength
