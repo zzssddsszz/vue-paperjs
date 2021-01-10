@@ -2,8 +2,8 @@
   <div id="app">
     <canvas id="myCanvas" class="myCanvas"></canvas>
     <form>
-      <label>체인길이</label>
-      <input v-model="chain.length" type="text"/>
+      <label>중앙팬던트 무게</label>
+      <input v-model="chain.centerWeight" type="number"/>
     </form>
   </div>
 
@@ -20,11 +20,23 @@ export default {
     myCanvas: null,
     paths: null,
     chain: {
-      length: null
+      length: null,
+      centerWeight:0
     }
   }),
   methods: {
     pathCreate(scope, chainLength, ...value) {
+      function getPointByTarget(target,head,chainLength) {
+        let angle = target.subtract(head).getAngle();
+
+        let pointByAngle = new paper.Point({
+          angle: angle,
+          length: chainLength
+        });
+        return pointByAngle;
+      }
+
+
       // scope.activate();
       let path = new paper.Path({
         strokeColor: "#000000",
@@ -35,38 +47,42 @@ export default {
       let head = new paper.Point(0,0);
       let to;
       let target;
+      //중간 하단으로 목표점 설정
+      target= new paper.Point(this.canvasWidth / 2, this.canvasHeight);
+
       if (value != null && typeof value == "object" && !Object.keys(value).length) {
-        console.log("value는 null입니다.");
-        target= new paper.Point(this.canvasWidth / 2, this.canvasHeight);
+        console.log("value 들어오면 작업 뭐할까")
       }
 
       //무한루프 몇번도나
       let co = 0;
-      //좌측상단에서 중간하단 찍고 우측상단까지 패스
+
+
+
+//좌측상단에서 중간하단 찍고 우측상단까지 경로
       while (head.getDistance(new paper.Point(this.canvasWidth, 0)) > chainLength) {
         if (head.getDistance(target) < chainLength) {
           target = new paper.Point(this.canvasWidth, 0);
         }
-        let angle = target.subtract(head).getAngle();
-
-        let pointByAngle = new paper.Point({
-          angle: angle,
-          length: chainLength
-        });
-
-        to = head.add(pointByAngle);
-
-        path.addSegments([head, to]);
+        to = head.add(getPointByTarget(target,head,chainLength));
+        //체인의 무게점
+        // console.log(to);
+        path.add(to);
+        path.lastSegment.weight = 10;
         head = to;
-
         co++;
         if (co > 300) {
           //무한루프 안전코드
           break;
         }
       }
+
+      //가운데 무게를 적용해봤음 뭔가 수정이 필요함
+      path.segments[path.segments.length/2].weight = 20;
+
+
       console.log(co + "번 반복함");
-      console.log(path.get);
+      // console.log(path.segments.length);
 
       //중간체인을 잘보이는 가운데로 맞추기
       let index = parseInt(path.segments.length / 2);
@@ -80,15 +96,23 @@ export default {
       let angle = 0;
       head = path.segments[index].point;
       //자연스럽게 하기 위해 캔버스 각도 조절
-      target = new paper.Point(this.canvasWidth*1.1 , -this.canvasHeight*2);
-      //중앙부터 우측 상단까지의 체인 조절
-      for (let i = path.segments.length / 2 ,  z = 0 ; i < path.segments.length; i++,z++) {
-        angle = angle%360;
-        // console.log(target.subtract(path.segments[i-1].point).getAngle())
-        // console.log(z/(path.segments.length/2 )+"//1");
-        angle += (target.subtract(path.segments[i-1].point).getAngle()- angle)*(z/(path.segments.length/2))*1.2;
+      target = new paper.Point(this.canvasWidth*1.5 , -this.canvasHeight*2);
+      let totalWeight = 0;
+      for (let i = path.segments.length / 2  ; i < path.segments.length; i++) {
+        totalWeight += path.segments[i].weight;
+      }
+      // console.log("총무게 : "+totalWeight);
 
-        // console.log(angle)
+      //중앙부터 우측 상단까지의 체인 조절
+      for (let i = path.segments.length / 2 ,weight =0 ; i < path.segments.length; i++) {
+        if (weight/totalWeight > 0.5){
+          weight = totalWeight;
+        }else {
+          weight += path.segments[i].weight;
+        }
+        angle = angle%360;
+        angle += (target.subtract(path.segments[i-1].point).getAngle()- angle)*(weight/2/totalWeight);
+
         let vector = new paper.Point({
           angle:angle,
           length:chainLength
@@ -100,26 +124,32 @@ export default {
       }
 
       //중앙부터 좌측 상단까지의 체인 조절
+      //초기각도는 좌측으로 -180도라서
       angle = -180;
-      // target = new paper.Point(-this.canvasWidth*0.1 , -this.canvasHeight*2);
-      target = new paper.Point(-this.canvasWidth*0.1 , -this.canvasHeight*2);
+      target = new paper.Point(-this.canvasWidth*0.5 , -this.canvasHeight*2);
 
+      totalWeight = 0;
       for (let i = path.segments.length / 2 ,  z = 0 ; i > 0; i--,z++) {
-        angle = angle%360;
-        // console.log(360-path.segments[i].point.subtract(target).getAngle());
-        //앞뒤 바뀜
-        //뭔가 엄청 고쳐야함 왜 되는지도 모르겠음
-        // console.log(z/(path.segments.length/2 )+"//2");
-        console.log(target.subtract(path.segments[i-1].point).getAngle()- angle);
-        angle += (target.subtract(path.segments[i-1].point).getAngle()- angle)*(z/(path.segments.length/2 ))*1.2;
+        totalWeight += path.segments[i].weight;
+      }
+      // console.log(totalWeight);
 
-        console.log(angle)
+      for (let i = path.segments.length / 2 ,weight = 0 ; i >= 0; i--) {
+        if (weight/totalWeight > 0.5){
+          weight = totalWeight;
+        }else {
+          weight += path.segments[i].weight;
+        }
+
+
+        angle = angle%360;
+        angle += (target.subtract(path.segments[i+1].point).getAngle()- angle)*(weight/2/totalWeight);
 
         let vector = new paper.Point({
           angle:angle,
           length:chainLength
         })
-        // console.log(vector);
+
         path.segments[i].point.set({
           x:path.segments[i+1].point.x+ vector.x,
           y:path.segments[i+1].point.y+ vector.y
