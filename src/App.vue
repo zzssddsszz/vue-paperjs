@@ -1,14 +1,69 @@
 <template>
   <div id="app">
-    <div class="container">
+    <div class="container main-content">
+
       <div class="row">
-        <canvas id="myCanvas" class="myCanvas" data-paper-hidpi="false"></canvas>
+        <div class="col-sm-6">
+          <canvas id="myCanvas" class="myCanvas" data-paper-resize="false" data-paper-hidpi="false"></canvas>
+        </div>
+        <div class="col-sm-6">
+          <div class="row image-grid">
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+            <div class="col-sm-4 col-md-2 "><img alt="" class="img-responsive center-block"
+                                                                           src="http://placehold.it/125x125"/></div>
+          </div>
+        </div>
       </div>
       <div class="row">
-          <label>중앙팬던트 무게</label>
-          <input v-model="chain.centerWeight" type="number"/>
+        <label>중앙팬던트 무게</label>
+        <input v-model="chain.centerWeight" type="number"/>
 
-          <button v-on:click="buttonClick">생성</button>
+        <button v-on:click="buttonClick">생성</button>
       </div>
     </div>
   </div>
