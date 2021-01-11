@@ -5,12 +5,10 @@
         <canvas id="myCanvas" class="myCanvas" data-paper-hidpi="false"></canvas>
       </div>
       <div class="row">
-        <form>
           <label>중앙팬던트 무게</label>
           <input v-model="chain.centerWeight" type="number"/>
 
           <button v-on:click="buttonClick">생성</button>
-        </form>
       </div>
     </div>
   </div>
@@ -43,10 +41,6 @@ export default {
           length: chainLength
         });
         return pointByAngle;
-      }
-      // eslint-disable-next-line no-unused-vars
-      function onResize(event) {
-        console.log("리사이즈");
       }
 
 
@@ -202,8 +196,6 @@ export default {
   },
   mounted() {
     this.myCanvas = document.getElementById("myCanvas");
-    this.myCanvas.width = 500;
-    this.myCanvas.height = 500;
 
     // paper.PaperScope.settings.hitTest()
     this.scope = new paper.PaperScope();
