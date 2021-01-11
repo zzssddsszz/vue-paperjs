@@ -2,7 +2,7 @@
   <div id="app">
     <div class="container">
       <div class="row">
-        <canvas id="myCanvas" class="myCanvas"></canvas>
+        <canvas id="myCanvas" class="myCanvas" data-paper-hidpi="false"></canvas>
       </div>
       <div class="row">
         <form>
@@ -43,6 +43,10 @@ export default {
           length: chainLength
         });
         return pointByAngle;
+      }
+      // eslint-disable-next-line no-unused-vars
+      function onResize(event) {
+        console.log("리사이즈");
       }
 
 
@@ -213,6 +217,8 @@ export default {
     this.buttonClick();
   }
 }
+
+
 </script>
 
 <style>
