@@ -1,10 +1,18 @@
 <template>
   <div id="app">
-    <canvas id="myCanvas" class="myCanvas"></canvas>
-    <form>
-      <label>중앙팬던트 무게</label>
-      <input v-model="chain.centerWeight" type="number"/>
-    </form>
+    <div class="container">
+      <div class="row">
+        <canvas id="myCanvas" class="myCanvas"></canvas>
+      </div>
+      <div class="row">
+        <form>
+          <label>중앙팬던트 무게</label>
+          <input v-model="chain.centerWeight" type="number"/>
+
+          <button v-on:click="buttonClick">생성</button>
+        </form>
+      </div>
+    </div>
   </div>
 
 </template>
@@ -21,11 +29,12 @@ export default {
     paths: null,
     chain: {
       length: null,
-      centerWeight: 0
-    }
+      centerWeight: 10
+    },
+    model: null
   }),
   methods: {
-    pathCreate(scope, chainLength, ...value) {
+    pathCreate(scope, chainLength, value) {
       function getPointByTarget(target, head, chainLength) {
         let angle = target.subtract(head).getAngle();
 
@@ -37,16 +46,18 @@ export default {
       }
 
 
-      // scope.activate();
+      scope.activate();
       let path = new paper.Path({
         strokeColor: "#000000",
         strokeJoin: 'round',
         strokeWidth: 1.5
       });
 
+      // console.log(path);
+
       let head = new paper.Point(0, 0);
-      let to;
-      let target;
+      let to = null;
+      let target = null;
       //중간 하단으로 목표점 설정
       target = new paper.Point(this.canvasWidth / 2, this.canvasHeight);
 
@@ -77,7 +88,7 @@ export default {
       }
 
       //가운데 무게를 적용해봤음 뭔가 수정이 필요함
-      path.segments[path.segments.length / 2].weight = 200;
+      path.segments[path.segments.length / 2].weight = parseInt(value.centerWeight);
 
 
       console.log(co + "번 반복함");
@@ -130,12 +141,12 @@ export default {
       target = new paper.Point(-this.canvasWidth * 0.5, -this.canvasHeight * 2);
 
       totalWeight = 0;
-      for (let i = path.segments.length / 2 , z = 0; i > 0; i--, z++) {
+      for (let i = path.segments.length / 2, z = 0; i > 0; i--, z++) {
         totalWeight += path.segments[i].weight;
       }
       // console.log(totalWeight);
 
-      for (let i = path.segments.length / 2 , weight = 0; i >= 0; i--) {
+      for (let i = path.segments.length / 2, weight = 0; i >= 0; i--) {
         if (weight / totalWeight > 0.5) {
           weight = totalWeight;
         } else {
@@ -144,7 +155,7 @@ export default {
 
 
         angle = angle % 360;
-        if (!(i == path.segments.length / 2 )) {
+        if (!(i == path.segments.length / 2)) {
           angle += (target.subtract(path.segments[i + 1].point).getAngle() - angle) * (weight / 2 / totalWeight);
         }
         let vector = new paper.Point({
@@ -170,14 +181,26 @@ export default {
       return path;
     },
     buttonClick() {
-      let self = this;
-      self.pathCreate(self.scope, 10);
 
+      if (!this.scope.project.isEmpty()) {
+        this.scope.project.clear();
+      }
+      let val = {
+        centerWeight: this.chain.centerWeight
+      }
+      this.pathCreate(this.scope, 10, val);
+      // this.scope.view.center.x = this.canvasWidth;
+      // this.scope.view.center.y = this.canvasHeight;
+      // this.scope.view.zoom = 0.5;
+      console.log(this.scope)
 
     }
   },
   mounted() {
     this.myCanvas = document.getElementById("myCanvas");
+    this.myCanvas.width = 500;
+    this.myCanvas.height = 500;
+
     // paper.PaperScope.settings.hitTest()
     this.scope = new paper.PaperScope();
     this.scope.setup(this.myCanvas);
@@ -186,7 +209,6 @@ export default {
     this.canvasWidth = this.myCanvas.width;
 
     // this.paths = this.path.segments();
-    console.log(this.scope);
     // this.scope.interiorPoint();
     this.buttonClick();
   }
@@ -197,7 +219,7 @@ export default {
 .myCanvas {
   width: 500px;
   height: 500px;
-  display: block;
+  display: inline-block;
   border: 3px solid black;
 }
 </style>
